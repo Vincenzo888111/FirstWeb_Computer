@@ -2,12 +2,21 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
-// https://vite.dev/config/
 export default defineConfig({
-  base: '/FirstWeb_Computer/',  // ← MUST match your repo name exactly
+  plugins: [react(), tailwindcss()],
+  base: '/FirstWeb_Computer/',  // ← Match your GitHub repo name exactly (trailing slash!)
   build: {
     outDir: 'dist',
-    sourcemap: true,  // Helps debug
+    sourcemap: true,  // Helps debug MIME issues
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,  // Ensures proper chunking for MIME
+      },
+    },
   },
-  plugins: [react(), tailwindcss()],
-});
+  server: {
+    mimeTypes: {
+      'application/javascript': ['jsx', 'js'],  // ← Forces correct MIME for .jsx
+    },
+  },
+})
